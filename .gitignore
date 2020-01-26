@@ -1,0 +1,11 @@
+bin/
+obj/
+/packages/
+/.idea/.idea.RaplaICal/.idea/contentModel.xml
+/.idea/.idea.RaplaICal/.idea/encodings.xml
+/.idea/.idea.RaplaICal/.idea/indexLayout.xml
+/.idea/.idea.RaplaICal/.idea/modules.xml
+/.idea/.idea.RaplaICal/.idea/projectSettingsUpdater.xml
+/.idea/.idea.RaplaICal/riderModule.iml
+/.idea/.idea.RaplaICal/.idea/vcs.xml
+/.idea/.idea.RaplaICal/.idea/workspace.xml
