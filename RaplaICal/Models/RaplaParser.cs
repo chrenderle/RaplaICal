@@ -10,25 +10,29 @@ namespace RaplaICal.Models
 {
     public static class RaplaParser
     {
-        public static List<Event> GetAllEvents(DateTime begin, DateTime end)
+        public static List<Event> GetAllEvents(DateTime begin, DateTime end, string key)
         {
             var events = new List<Event>();
             while (DateTime.Compare(begin, end) <= 0)
             {
-                events.AddRange(GetWeekEvents(begin));
+                events.AddRange(GetWeekEvents(begin, key));
                 begin = begin.AddDays(7);
             }
             return events;
         }
-        public static List<Event> GetWeekEvents(DateTime requestDay)
+        public static List<Event> GetWeekEvents(DateTime requestDay, string key)
         {
             Console.WriteLine($"requested day: {requestDay.ToString()}");
             var monday = requestDay.AddDays((int) requestDay.DayOfWeek * -1 + 1);
             Console.WriteLine($"monday: {monday.ToString()}");
             List<Event> events = new List<Event>();
+            if (key == "nix")
+            {
+                key = "txB1FOi5xd1wUJBWuX8lJjJ5FQX37Q4x6L6V-yF8kItuSNEjEzWjjGYG6k5eurQF";
+            }
             /*load the html document*/
-            string url =
-                $"https://rapla.dhbw-stuttgart.de/rapla?key=txB1FOi5xd1wUJBWuX8lJjJ5FQX37Q4x6L6V-yF8kItuSNEjEzWjjGYG6k5eurQF&day={monday.Day}&month={monday.Month}&year={monday.Year}";
+            //string url = $"https://rapla.dhbw-stuttgart.de/rapla?key=txB1FOi5xd1wUJBWuX8lJjJ5FQX37Q4x6L6V-yF8kItuSNEjEzWjjGYG6k5eurQF&day={monday.Day}&month={monday.Month}&year={monday.Year}";
+            string url = $"https://rapla.dhbw-stuttgart.de/rapla?key={key}&day={monday.Day}&month={monday.Month}&year={monday.Year}";
             WebRequest request = WebRequest.Create(url);
             WebResponse response = request.GetResponse();
             Stream responseStream = response.GetResponseStream();
@@ -101,9 +105,9 @@ namespace RaplaICal.Models
             return events;
         }
 
-        public static List<Event> GetDayEvents(DateTime requestDate)
+        public static List<Event> GetDayEvents(DateTime requestDate, string key)
         {
-            return GetWeekEvents(requestDate).Where(x => x.Begin.Date == requestDate.Date).ToList();
+            return GetWeekEvents(requestDate, key).Where(x => x.Begin.Date == requestDate.Date).ToList();
         }
     }
 }

@@ -18,14 +18,32 @@ namespace RaplaICal.Controller
             }
             DateTime begin = new DateTime(startYear, startMonth, startDay);
             DateTime end = new DateTime(endYear, endMonth, endDay);
-            var events = RaplaParser.GetAllEvents(begin, end);
+            return Index2(key, begin.ToString("yyyy-MM-dd"), end.ToString("yyyy-MM-dd"));
+        }
+
+        [HttpGet]
+        //[ActionName("Index")]
+        public IActionResult Index2(string key, string start, string end)
+        {
+            if ((key == null) || (start == null) || (end == null))
+            {
+                return BadRequest();
+            }
+            DateTime startDate = DateTime.Parse(start);
+            DateTime endDate = DateTime.Parse(end);
+            var events = RaplaParser.GetAllEvents(startDate, endDate, key);
             var calendar = CalCreator.Create(events);
+            //time fix for
             calendar = calendar.Replace("BEGIN:VCALENDAR", "BEGIN:VCALENDAR\nX-WR-TIMEZONE:Europe/Berlin");
             var contentType = "text/calendar";
             var bytes = Encoding.UTF8.GetBytes(calendar);
-            var result = new FileContentResult(bytes, contentType);
-            result.FileDownloadName = "events.ics";
-            return result;
+            return new FileContentResult(bytes, contentType) {FileDownloadName = "events.ics"};
+        }
+
+        [HttpGet]
+        public ViewResult Setup()
+        {
+            return View(new Configuration() {Start = DateTime.Today, End = DateTime.Today});
         }
     }
 }
