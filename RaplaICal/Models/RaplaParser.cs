@@ -26,12 +26,7 @@ namespace RaplaICal.Models
             var monday = requestDay.AddDays((int) requestDay.DayOfWeek * -1 + 1);
             Console.WriteLine($"monday: {monday.ToString()}");
             List<Event> events = new List<Event>();
-            if (key == "nix")
-            {
-                key = "txB1FOi5xd1wUJBWuX8lJjJ5FQX37Q4x6L6V-yF8kItuSNEjEzWjjGYG6k5eurQF";
-            }
             /*load the html document*/
-            //string url = $"https://rapla.dhbw-stuttgart.de/rapla?key=txB1FOi5xd1wUJBWuX8lJjJ5FQX37Q4x6L6V-yF8kItuSNEjEzWjjGYG6k5eurQF&day={monday.Day}&month={monday.Month}&year={monday.Year}";
             string url = $"https://rapla.dhbw-stuttgart.de/rapla?key={key}&day={monday.Day}&month={monday.Month}&year={monday.Year}";
             WebRequest request = WebRequest.Create(url);
             WebResponse response = request.GetResponse();
@@ -42,16 +37,32 @@ namespace RaplaICal.Models
             html.LoadHtml(responseString);
             var trs = html.DocumentNode.SelectNodes(
                 "/html/body/div[@id=\"calendar\"]/table/tbody/tr");
+            /*//get the day separator cells
+            var days = trs[0];
+            int[] dayLength = new int[5];
+            var childs = days.ChildNodes;
+            int dayLengthCounter = 0;
+            foreach (var child in childs)
+            {
+                if (child.HasClass("week_header"))
+                {
+                    dayLength[dayLengthCounter] = (Convert.ToInt16(child.Attributes["colspan"].Value) - 1) / 2;
+                    dayLengthCounter++;
+                }
+            }*/
+
             foreach (var tr in trs)
             {
                 var td = tr.FirstChild;
                 if (td != null)
                 {
-                    var day = -1;
+                    /*loop through the tds*/
+                    var day = 0;
+                    //var dayCounter = dayLength;
                     while (td.NextSibling != null)
                     {
                         td = td.NextSibling;
-                        if (td.HasClass("week_smallseparatorcell") || td.HasClass("week_smallseparatorcell_black"))
+                        if (td.HasClass("week_separatorcell") || td.HasClass("week_separatorcell_black"))
                         {
                             day++;
                         }
